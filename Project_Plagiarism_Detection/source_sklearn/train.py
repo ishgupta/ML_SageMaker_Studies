@@ -10,7 +10,8 @@ import pandas as pd
 import joblib
 
 ## TODO: Import any additional libraries you need to define a model
-
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
 
 # Provided model load function
 def model_fn(model_dir):
@@ -28,7 +29,6 @@ def model_fn(model_dir):
 
 ## TODO: Complete the main code
 if __name__ == '__main__':
-    
     # All of the model parameters and training parameters are sent as arguments
     # when this script is executed, during a training job
     
@@ -42,7 +42,6 @@ if __name__ == '__main__':
     parser.add_argument('--data-dir', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
     
     ## TODO: Add any additional arguments that you will need to pass into your model
-    
     # args holds all passed-in arguments
     args = parser.parse_args()
 
@@ -59,13 +58,21 @@ if __name__ == '__main__':
     
 
     ## TODO: Define a model 
-    model = None
+    parameters = {
+        "n_estimators":[ 5, 10, 50, 100, 250 ],
+        "max_depth":[ 2, 4, 8, 16, 32, None ]
+    }
+
+    model = GridSearchCV(
+            estimator = RandomForestClassifier(), 
+        param_grid = parameters,
+        cv = 5
+        )
     
-    
+        
     ## TODO: Train the model
-    
-    
-    
+    model.fit( train_x, train_y )
+        
     ## --- End of your code  --- ##
     
 
